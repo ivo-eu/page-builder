@@ -1,0 +1,1 @@
+export { generateReactCode } from './generateReact'

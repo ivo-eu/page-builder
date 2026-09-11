@@ -1,0 +1,1 @@
+export { registerBuiltinComponents } from './register'
