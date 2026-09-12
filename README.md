@@ -54,3 +54,7 @@ src/
 当前设计：属性面板输入的值 = 设计坐标值 = 导出时的 CSS 值。画布显示层通过 `transform: scale(zoom)` 做视觉缩放，属性面板和导出层不参与换算。
 
 需要在实现导出功能时验证：当画布缩放比例不为 1 时，输入的 fontSize 和 borderWidth 在导出后的网页上是否表现一致。
+
+## Symphony 测试通道
+
+此分支也验证从重建的 WSL 通道创建 GitLab MR。
