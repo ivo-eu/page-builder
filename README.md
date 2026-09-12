@@ -58,3 +58,4 @@ src/
 ## Symphony 测试通道
 
 此分支也验证从重建的 WSL 通道创建 GitLab MR。
+恢复的 gatekeeper 已将 SYM-38 从 Needs Info 经 Waiting 推进到 Todo。
