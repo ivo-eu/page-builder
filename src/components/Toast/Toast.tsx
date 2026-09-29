@@ -82,6 +82,7 @@ function ToastContainer({ items, onClose }: { items: NotificationItem[]; onClose
 
 function ToastItem({ item, onClose }: { item: NotificationItem; onClose: (id: number) => void }) {
   const config = TYPE_CONFIG[item.type]
+  const isUrgent = item.type === 'warning' || item.type === 'error'
 
   const containerStyle: React.CSSProperties = {
     width: 320,
@@ -142,13 +143,23 @@ function ToastItem({ item, onClose }: { item: NotificationItem; onClose: (id: nu
   }
 
   return (
-    <div style={containerStyle}>
-      <div style={iconStyle}>{config.icon}</div>
+    <div
+      style={containerStyle}
+      role={isUrgent ? 'alert' : 'status'}
+    >
+      <div style={iconStyle} aria-hidden="true">{config.icon}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={titleStyle}>{item.title}</p>
         {item.description && <p style={descStyle}>{item.description}</p>}
       </div>
-      <button style={closeStyle} onClick={() => onClose(item.id)}>✕</button>
+      <button
+        type="button"
+        style={closeStyle}
+        aria-label="关闭通知"
+        onClick={() => onClose(item.id)}
+      >
+        ✕
+      </button>
     </div>
   )
 }
