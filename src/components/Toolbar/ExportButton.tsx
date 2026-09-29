@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import { useCanvasStore } from '../../store'
 import { generateReactCode } from '../../export'
+import { toast } from '../Toast'
 
 export const ExportButton: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
@@ -15,11 +16,21 @@ export const ExportButton: React.FC = () => {
     setCopied(false)
   }, [])
 
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(code).then(() => {
+  const handleCopy = useCallback(async () => {
+    setCopied(false)
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error('Clipboard API unavailable')
+      }
+
+      await navigator.clipboard.writeText(code)
       setCopied(true)
+      toast.success('复制成功')
       setTimeout(() => setCopied(false), 2000)
-    })
+    } catch {
+      toast.error('复制失败', '请手动选择并复制代码')
+    }
   }, [code])
 
   return (
