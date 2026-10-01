@@ -122,6 +122,7 @@ export const ExportButton: React.FC = () => {
                 </button>
                 <button
                   onClick={() => setShowModal(false)}
+                  aria-label="关闭导出弹窗"
                   style={{
                     width: 24,
                     height: 24,
