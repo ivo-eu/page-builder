@@ -36,6 +36,7 @@ export const ExportButton: React.FC = () => {
   return (
     <>
       <button
+        type="button"
         onClick={handleExport}
         className="glass-panel-dark"
         style={{
@@ -105,6 +106,7 @@ export const ExportButton: React.FC = () => {
               </span>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
+                  type="button"
                   onClick={handleCopy}
                   style={{
                     padding: '5px 14px',
@@ -121,6 +123,7 @@ export const ExportButton: React.FC = () => {
                   {copied ? '已复制 ✓' : '复制代码'}
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowModal(false)}
                   aria-label="关闭导出弹窗"
                   style={{
