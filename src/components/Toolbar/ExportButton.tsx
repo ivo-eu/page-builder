@@ -37,6 +37,7 @@ export const ExportButton: React.FC = () => {
     <>
       <button
         type="button"
+        title="导出当前页面的 React 代码"
         onClick={handleExport}
         className="glass-panel-dark"
         style={{
