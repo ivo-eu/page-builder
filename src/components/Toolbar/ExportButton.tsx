@@ -108,6 +108,7 @@ export const ExportButton: React.FC = () => {
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
                   type="button"
+                  title="复制导出的 React 代码"
                   onClick={handleCopy}
                   style={{
                     padding: '5px 14px',
