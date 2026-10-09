@@ -7,3 +7,9 @@ This non-product file records controlled end-to-end verification against
 - Merge path: Symphony `land`
 - Scope: PR association, CI check discovery, branch protection, and merge-state synchronization
 - Production behavior changed: no
+
+Second controlled path:
+
+- Linear issue: `SGH-2`
+- Merge path: direct protected GitHub merge (without Symphony `land`)
+- Production behavior changed: no
