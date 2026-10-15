@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useCanvasStore } from '../../store'
 import { generateReactCode } from '../../export'
 import { toast } from '../Toast'
@@ -7,6 +7,43 @@ export const ExportButton: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
   const [code, setCode] = useState('')
   const [copied, setCopied] = useState(false)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const copyButtonRef = useRef<HTMLButtonElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  const closeModal = useCallback(() => {
+    setShowModal(false)
+    triggerRef.current?.focus()
+  }, [])
+
+  useEffect(() => {
+    if (!showModal) return
+
+    copyButtonRef.current?.focus()
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        closeModal()
+        return
+      }
+
+      if (event.key !== 'Tab') return
+      const first = copyButtonRef.current
+      const last = closeButtonRef.current
+      if (!first || !last) return
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [showModal, closeModal])
 
   const handleExport = useCallback(() => {
     const { nodes, rootChildren } = useCanvasStore.getState()
@@ -37,6 +74,7 @@ export const ExportButton: React.FC = () => {
     <>
       <button
         type="button"
+        ref={triggerRef}
         title="导出当前页面的 React 代码"
         onClick={handleExport}
         className="glass-panel-dark"
@@ -68,6 +106,9 @@ export const ExportButton: React.FC = () => {
 
       {showModal && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="export-dialog-title"
           style={{
             position: 'fixed',
             inset: 0,
@@ -79,7 +120,7 @@ export const ExportButton: React.FC = () => {
             backdropFilter: 'blur(8px)',
           }}
           onClick={(e) => {
-            if (e.target === e.currentTarget) setShowModal(false)
+            if (e.target === e.currentTarget) closeModal()
           }}
         >
           <div
@@ -102,12 +143,13 @@ export const ExportButton: React.FC = () => {
                 borderBottom: '1px solid rgba(255,255,255,0.06)',
               }}
             >
-              <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: 500, fontFamily: '"SF Mono", monospace' }}>
+              <span id="export-dialog-title" style={{ color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: 500, fontFamily: '"SF Mono", monospace' }}>
                 MyPage.tsx
               </span>
               <div style={{ display: 'flex', gap: 8 }}>
                 <button
                   type="button"
+                  ref={copyButtonRef}
                   title="复制导出的 React 代码"
                   onClick={handleCopy}
                   style={{
@@ -126,7 +168,8 @@ export const ExportButton: React.FC = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  ref={closeButtonRef}
+                  onClick={closeModal}
                   aria-label="关闭导出弹窗"
                   style={{
                     width: 24,
