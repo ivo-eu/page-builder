@@ -1,1 +1,2 @@
-export { generateReactCode } from './generateReact'
+export { generateReactCode, generateReactExport, serializeJSXString } from './generateReact'
+export type { ExportDiagnostic, ReactExportResult } from './generateReact'
