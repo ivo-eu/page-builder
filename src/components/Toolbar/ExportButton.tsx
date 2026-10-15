@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useCanvasStore } from '../../store'
-import { generateReactCode } from '../../export'
+import { generateReactExport, type ExportDiagnostic } from '../../export'
 import { toast } from '../Toast'
 
 export const ExportButton: React.FC = () => {
   const [showModal, setShowModal] = useState(false)
   const [code, setCode] = useState('')
+  const [diagnostics, setDiagnostics] = useState<ExportDiagnostic[]>([])
   const [copied, setCopied] = useState(false)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const copyButtonRef = useRef<HTMLButtonElement>(null)
@@ -47,8 +48,9 @@ export const ExportButton: React.FC = () => {
 
   const handleExport = useCallback(() => {
     const { nodes, rootChildren } = useCanvasStore.getState()
-    const generated = generateReactCode(nodes, rootChildren)
-    setCode(generated)
+    const generated = generateReactExport(nodes, rootChildren)
+    setCode(generated.code)
+    setDiagnostics(generated.diagnostics)
     setShowModal(true)
     setCopied(false)
   }, [])
@@ -189,6 +191,29 @@ export const ExportButton: React.FC = () => {
                 </button>
               </div>
             </div>
+            {diagnostics.length > 0 && (
+              <div
+                role="alert"
+                style={{
+                  margin: '12px 18px 0',
+                  padding: '10px 12px',
+                  borderRadius: 8,
+                  color: 'rgba(255,235,180,0.95)',
+                  backgroundColor: 'rgba(255,159,10,0.16)',
+                  border: '1px solid rgba(255,159,10,0.35)',
+                  fontSize: 11,
+                }}
+              >
+                <div style={{ fontWeight: 600, marginBottom: 6 }}>导出警告：事件绑定不会被导出</div>
+                <ul style={{ margin: 0, paddingLeft: 18 }}>
+                  {diagnostics.map((diagnostic) => (
+                    <li key={`${diagnostic.nodeId}-${diagnostic.action}-${diagnostic.targetId}`}>
+                      {diagnostic.message}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <pre
               style={{
                 padding: 18,

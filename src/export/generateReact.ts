@@ -6,6 +6,8 @@ export interface ExportDiagnostic {
   type: 'event-bindings-unsupported'
   nodeId: string
   nodeType: string
+  action: ComponentNode['eventBindings'][number]['action']
+  targetId: string
   message: string
 }
 
@@ -79,17 +81,25 @@ ${jsx}
 `
 
   const diagnostics: ExportDiagnostic[] = []
+  const seenDiagnostics = new Set<string>()
   nodes.forEach((node) => {
-    if (node.eventBindings.length > 0) {
+    node.eventBindings.forEach((binding) => {
+      const key = `${node.id}\0${binding.action}\0${binding.targetId}`
+      if (seenDiagnostics.has(key)) return
+      seenDiagnostics.add(key)
       diagnostics.push({
         type: 'event-bindings-unsupported',
         nodeId: node.id,
         nodeType: node.type,
-        message: `Node ${node.id} (${node.type}) has ${node.eventBindings.length} event binding(s); bindings were not exported.`,
+        action: binding.action,
+        targetId: binding.targetId,
+        message: `Node ${node.id} (${node.type}) event ${binding.event} -> ${binding.action} on ${binding.targetId} was not exported.`,
       })
-    }
+    })
   })
-  diagnostics.sort((a, b) => a.nodeId.localeCompare(b.nodeId))
+  diagnostics.sort((a, b) =>
+    a.nodeId.localeCompare(b.nodeId) || a.action.localeCompare(b.action) || a.targetId.localeCompare(b.targetId),
+  )
   return { code, diagnostics }
 }
 
