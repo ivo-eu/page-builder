@@ -84,6 +84,8 @@ function App() {
       {/* 测试按钮（后续移除）— 放在导出按钮下方 */}
       {rootChildren.length > 0 && (
         <button
+          type="button"
+          title="切换测试属性面板与组件列表"
           onClick={handleTestFlip}
           style={{
             position: 'fixed',
