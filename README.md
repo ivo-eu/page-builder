@@ -57,6 +57,6 @@ src/
 
 ## Symphony 测试通道
 
-此通道通过 GitHub PR 和 Symphony 看板验证完整审查流程：`Todo → In Progress → In Review → Merging → Done`。
+此通道通过目标分支为 `feature/symphony/e2e-20260925` 的 GitHub PR 和 Symphony 看板验证完整审查流程：`Todo → In Progress → In Review → Merging → Done`。
 
 PR 完成验证后进入 `In Review`，由人工在看板审查；人工将任务从 `In Review` 移至 `Merging` 即表示授权合并，实际的 GitHub 合并由 Gatekeeper 校验并执行，完成后任务进入 `Done`。
