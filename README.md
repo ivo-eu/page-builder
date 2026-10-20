@@ -57,5 +57,6 @@ src/
 
 ## Symphony 测试通道
 
-此分支也验证从重建的 WSL 通道创建 GitLab MR。
-恢复的 gatekeeper 已将 SYM-38 从 Needs Info 经 Waiting 推进到 Todo。
+此通道通过 GitHub PR 和 Symphony 看板验证完整审查流程：`Todo → In Progress → In Review → Merging → Done`。
+
+PR 完成验证后进入 `In Review`，由人工在看板审查；人工将任务从 `In Review` 移至 `Merging` 即表示授权合并，实际的 GitHub 合并由 Gatekeeper 校验并执行，完成后任务进入 `Done`。
