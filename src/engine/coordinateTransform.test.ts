@@ -72,4 +72,76 @@ describe('coordinate transforms', () => {
       ),
     ).toEqual(canvasPoint)
   })
+
+  const fractionalCases = [
+    {
+      name: 'zoom 0.75 with fractional offsets and scroll',
+      rect: canvasRect(13.25, 27.5),
+      zoom: 0.75,
+      scrollLeft: 18.5,
+      scrollTop: 42.25,
+      screenPoint: { x: 241.375, y: 198.625 },
+      canvasPoint: { x: 156.875, y: 134.375 },
+    },
+    {
+      name: 'zoom 1.25 with fractional offsets and scroll',
+      rect: canvasRect(86.75, 14.125),
+      zoom: 1.25,
+      scrollLeft: 63.5,
+      scrollTop: 9.75,
+      screenPoint: { x: 412.625, y: 287.375 },
+      canvasPoint: { x: 324.2, y: 228.35 },
+    },
+  ]
+
+  const expectPointWithinTolerance = (
+    actual: { x: number; y: number },
+    expected: { x: number; y: number },
+    label: string,
+  ) => {
+    expect(Math.abs(actual.x - expected.x), `${label} (x)`).toBeLessThanOrEqual(1e-9)
+    expect(Math.abs(actual.y - expected.y), `${label} (y)`).toBeLessThanOrEqual(1e-9)
+  }
+
+  it.each(fractionalCases)('$name: screen -> canvas -> screen', testCase => {
+    const canvasPoint = screenToCanvas(
+      testCase.screenPoint.x,
+      testCase.screenPoint.y,
+      testCase.rect,
+      testCase.zoom,
+      testCase.scrollLeft,
+      testCase.scrollTop,
+    )
+    const screenPoint = canvasToScreen(
+      canvasPoint.x,
+      canvasPoint.y,
+      testCase.rect,
+      testCase.zoom,
+      testCase.scrollLeft,
+      testCase.scrollTop,
+    )
+
+    expectPointWithinTolerance(screenPoint, testCase.screenPoint, testCase.name)
+  })
+
+  it.each(fractionalCases)('$name: canvas -> screen -> canvas', testCase => {
+    const screenPoint = canvasToScreen(
+      testCase.canvasPoint.x,
+      testCase.canvasPoint.y,
+      testCase.rect,
+      testCase.zoom,
+      testCase.scrollLeft,
+      testCase.scrollTop,
+    )
+    const canvasPoint = screenToCanvas(
+      screenPoint.x,
+      screenPoint.y,
+      testCase.rect,
+      testCase.zoom,
+      testCase.scrollLeft,
+      testCase.scrollTop,
+    )
+
+    expectPointWithinTolerance(canvasPoint, testCase.canvasPoint, testCase.name)
+  })
 })
